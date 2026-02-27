@@ -110,10 +110,10 @@ namespace Bicep.Core.UnitTests.Configuration
           "waitAndRetry": false,
           "localDeploy": false,
           "resourceInfoCodegen": false,
-          "desiredStateConfiguration": false,
           "userDefinedConstraints": false,
           "deployCommands": false,
-          "thisNamespace": false
+          "thisNamespace": false,
+          "existingNullIfNotFound": false
         },
         "formatting": {
           "indentKind": "Space",
@@ -194,10 +194,10 @@ namespace Bicep.Core.UnitTests.Configuration
           "localDeploy": false,
           "resourceInfoCodegen": false,
           "moduleExtensionConfigs": false,
-          "desiredStateConfiguration": false,
           "userDefinedConstraints": false,
           "deployCommands": false,
-          "thisNamespace": false
+          "thisNamespace": false,
+          "existingNullIfNotFound": false
         },
         "formatting": {
           "indentKind": "Space",
@@ -300,10 +300,10 @@ namespace Bicep.Core.UnitTests.Configuration
           "localDeploy": false,
           "resourceInfoCodegen": false,
           "moduleExtensionConfigs": false,
-          "desiredStateConfiguration": false,
           "userDefinedConstraints": false,
           "deployCommands": false,
-          "thisNamespace": false
+          "thisNamespace": false,
+          "existingNullIfNotFound": false
         },
         "formatting": {
           "indentKind": "Space",
@@ -387,10 +387,10 @@ namespace Bicep.Core.UnitTests.Configuration
                 LocalDeploy: false,
                 ResourceInfoCodegen: false,
                 ModuleExtensionConfigs: false,
-                DesiredStateConfiguration: false,
                 UserDefinedConstraints: false,
                 DeployCommands: false,
-                ThisNamespace: false);
+                ThisNamespace: false,
+                ExistingNullIfNotFound: false);
 
             configuration.WithExperimentalFeaturesEnabled(experimentalFeaturesEnabled).Should().HaveContents(/*lang=json,strict*/ """
             {
@@ -472,10 +472,10 @@ namespace Bicep.Core.UnitTests.Configuration
                 "localDeploy": false,
                 "resourceInfoCodegen": false,
                 "moduleExtensionConfigs": false,
-                "desiredStateConfiguration": false,
                 "userDefinedConstraints": false,
                 "deployCommands": false,
-                "thisNamespace": false
+                "thisNamespace": false,
+                "existingNullIfNotFound": false
             },
             "formatting": {
                 "indentKind": "Space",
@@ -824,10 +824,10 @@ namespace Bicep.Core.UnitTests.Configuration
                     "localDeploy": false,
                     "resourceInfoCodegen": false,
                     "moduleExtensionConfigs": false,
-                    "desiredStateConfiguration": false,
                     "userDefinedConstraints": false,
                     "deployCommands": false,
-                    "thisNamespace": false
+                    "thisNamespace": false,
+                    "existingNullIfNotFound": false
                   },
                   "formatting": {
                     "indentKind": "Space",

@@ -251,28 +251,50 @@ Usage:
       bicep jsonrpc --socket 9853
       bicep jsonrpc --stdio
 
+  {exeName} snapshot [options] <file>
+    Generates or validates a deployment snapshot from a .bicepparam file.
+
+    Arguments:
+      <file>        The input .bicepparam file
+
+    Options:
+      --mode <mode>              Sets the snapshot mode. Valid values are ( overwrite | validate ).
+                                   Overwrite: Generates a new snapshot and saves it to <file>.snapshot.json.
+                                   Validate: Compares the generated snapshot against an existing snapshot file.
+      --tenant-id <id>           The tenant ID to use for the deployment.
+      --subscription-id <id>     The subscription ID to use for the deployment.
+      --resource-group <name>    The resource group name to use for the deployment.
+      --location <location>      The location to use for the deployment.
+      --deployment-name <name>   The deployment name to use.
+
+    Examples:
+      bicep snapshot params.bicepparam
+      bicep snapshot params.bicepparam --mode overwrite
+      bicep snapshot params.bicepparam --mode validate
+      bicep snapshot params.bicepparam --subscription-id 00000000-0000-0000-0000-000000000000 --resource-group my-rg
+
 "; // this newline is intentional
 
-            io.Output.Write(output);
-            io.Output.Flush();
+            io.Output.Writer.Write(output);
+            io.Output.Writer.Flush();
         }
 
         private void PrintVersion()
         {
             var output = $@"Bicep CLI version {environment.GetVersionString()}{System.Environment.NewLine}";
 
-            io.Output.Write(output);
-            io.Output.Flush();
+            io.Output.Writer.Write(output);
+            io.Output.Writer.Flush();
         }
 
         private void PrintLicense()
         {
-            WriteEmbeddedResource(io.Output, "LICENSE.deflated");
+            WriteEmbeddedResource(io.Output.Writer, "LICENSE.deflated");
         }
 
         private void PrintThirdPartyNotices()
         {
-            WriteEmbeddedResource(io.Output, "NOTICE.deflated");
+            WriteEmbeddedResource(io.Output.Writer, "NOTICE.deflated");
         }
 
         private static void WriteEmbeddedResource(TextWriter writer, string streamName)

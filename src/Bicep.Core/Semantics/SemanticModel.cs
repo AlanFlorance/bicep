@@ -53,6 +53,8 @@ namespace Bicep.Core.Semantics
         private readonly Lazy<ImmutableDictionary<ExtensionConfigAssignmentSymbol, ExtensionMetadata?>> extensionDeclarationsByExtensionConfigAssignment;
         private readonly Lazy<ImmutableDictionary<ExtensionMetadata, ExtensionConfigAssignmentSymbol?>> extensionConfigAssignmentsByDeclaration;
 
+        private readonly Lazy<(ExternalInputReferences references, IReadOnlyList<IDiagnostic> diagnostics)> externalInputReferencesLazy;
+
         private readonly Lazy<ImmutableArray<ResourceMetadata>> allResourcesLazy;
         private readonly Lazy<ImmutableArray<DeclaredResourceMetadata>> declaredResourcesLazy;
         private readonly Lazy<ImmutableArray<IDiagnostic>> allDiagnostics;
@@ -150,6 +152,13 @@ namespace Bicep.Core.Semantics
             this.extensionsLazy = new(FindExtensions);
             this.extensionDeclarationsByExtensionConfigAssignment = new(InitializeExtensionDeclarationToAssignmentDictionary);
             this.extensionConfigAssignmentsByDeclaration = new(InitializeExtensionConfigAssignmentToDeclarationDictionary);
+
+            this.externalInputReferencesLazy = new(() =>
+            {
+                var diagnosticWriter = ToListDiagnosticWriter.Create();
+                var references = ExternalInputFunctionReferenceVisitor.CollectExternalInputReferences(this, diagnosticWriter);
+                return (references, diagnosticWriter.GetDiagnostics());
+            });
 
             this.exportsLazy = new(() => FindExportedTypes().Concat(FindExportedVariables()).Concat(FindExportedFunctions())
                 .DistinctBy(export => export.Name, LanguageConstants.IdentifierComparer)
@@ -258,6 +267,8 @@ namespace Bicep.Core.Semantics
 
         public InlineDependencyVisitor.SymbolsToInline SymbolsToInline => symbolsToInlineLazy.Value;
 
+        public ExternalInputReferences ExternalInputReferences => externalInputReferencesLazy.Value.references;
+
         public ResourceAncestorGraph ResourceAncestors => resourceAncestorsLazy.Value;
 
         public ImmutableDictionary<DeclaredResourceMetadata, ScopeHelper.ScopeData> ResourceScopeData => resourceScopeDataLazy.Value.scopeData;
@@ -339,6 +350,7 @@ namespace Bicep.Core.Semantics
                 .Concat(GetLinterDiagnostics())
                 .Concat(this.resourceScopeDataLazy.Value.diagnostics)
                 .Concat(this.moduleScopeDataLazy.Value.diagnostics)
+                .Concat(this.externalInputReferencesLazy.Value.diagnostics)
                 // TODO: This could be eliminated if we change the params type checking code to operate more on symbols
                 .Concat(GetAdditionalParamsSemanticDiagnostics())
                 .Distinct()
